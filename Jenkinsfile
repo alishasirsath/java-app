@@ -1,46 +1,35 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'java-app'
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from source control
+                // Checkout the source code
                 checkout scm
             }
         }
 
-        stage('Build Java') {
+        stage('Compile') {
             steps {
-                echo 'Compiling Java...'
+                echo 'Compiling Java program...'
                 sh 'javac App.java'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Run') {
             steps {
-                echo 'Building Docker image...'
-                sh "docker build -t $IMAGE_NAME ."
-            }
-        }
-
-        stage('Run Docker Image') {
-            steps {
-                echo 'Running Docker container...'
-                sh "docker run --rm $IMAGE_NAME"
+                echo 'Running Java application...'
+                sh 'java App'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Build completed successfully!'
+            echo '✅ Java application ran successfully.'
         }
         failure {
-            echo '❌ Build failed.'
+            echo '❌ Build or run failed.'
         }
     }
 }
